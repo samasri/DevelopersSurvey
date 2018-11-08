@@ -2,8 +2,6 @@
 
 one:
   UserID: MyString
-  Status: 1
 
 two:
   UserID: MyString
-  Status: 1
