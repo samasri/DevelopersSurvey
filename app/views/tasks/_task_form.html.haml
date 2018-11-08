@@ -1,0 +1,9 @@
+.modal-header
+	%h1 New Task
+= simple_form_for task, class: 'clearfix' do |f|
+	.modal-body
+		= f.input :title, :label => "Question 1"
+		= f.input :note, :label => "Question 2"
+		= f.input :completed, as: :string, input_html: {class: 'datepicker'}, :label => "Question 3"
+	.modal-footer
+		= f.submit 'Save', class: 'btn btn-primary'
