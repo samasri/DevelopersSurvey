@@ -10,10 +10,10 @@ Link passenger to the right ruby by doing the following:
 Use [this link](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-rails-app-with-passenger-and-nginx-on-ubuntu-14-04#step-seven-—-deploy) to install Rails and deploy app.
 
 # Ruby on Rails Notes
-Since this is my first project in Ruby on Rails, I've taken some notes of how things go [here]().
+Since this is my first project in Ruby on Rails, I've taken some notes of how things go [here](https://github.com/samasri/DevelopersSurvey/blob/master/doc/RubyOnRailsNotes.md).
 
 # Database
-The schema can be found [here](). The models can be initialized using the following commands:
+The schema can be found [here](https://github.com/samasri/DevelopersSurvey/blob/master/doc/Database.png). The models can be initialized using the following commands:
 ```
 rails generate model UserStatus UserID:string Status:integer
 rake db:migrate RAILS_ENV=development
