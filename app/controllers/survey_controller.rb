@@ -1,7 +1,7 @@
 class SurveyController < ApplicationController
 	def bg
 		# Keep track of session nbs
-		unless checkSessionNb()
+		unless checkSessionNb(0,true)
 			return
 		end
 		UserStatus.create(UserID: session.id, Page: 0) # Using session nbs as an identifier is a security vunlerability
@@ -85,10 +85,10 @@ class SurveyController < ApplicationController
 	end
 	
 	private
-	def checkSessionNb(pageNb=-1)
+	def checkSessionNb(pageNb, isFirstUser=false)
 		begin 
 			user = UserStatus.find_by! UserID: session.id
-			if (user.Page == pageNb)
+			if user.Page == pageNb
 				return true
 			else
 				if user.Page == 0
@@ -104,7 +104,7 @@ class SurveyController < ApplicationController
 				return false
 			end
 		rescue
-			return true if pageNb = -1
+			return true if isFirstUser # If first page, return true so that calling method does not exit
 			return false
 		end
 	end
