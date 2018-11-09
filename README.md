@@ -1,5 +1,5 @@
 # Description
-This project was adapted from [this tutorial](https://iridakos.com/tutorials/2013/12/07/creating-a-simple-todo-part-1.html) and the code it refers to. However, it was changed and customized to become a survey presented for developers to get their opinions about specific replies on StackOverflow questions. It is my first Ruby on Rails project and will be used to help in a [research project](https://sarahnadi.org/smr/var-c++/) I am helping with.
+This project was adapted from [this tutorial](https://iridakos.com/tutorials/2013/12/07/creating-a-simple-todo-part-1.html) and the code it refers to. However, it was changed and customized to become a survey presented for developers to get their opinions about specific replies on StackOverflow questions. It is my first Ruby on Rails project and will be used to help in a [research project](https://sarahnadi.org/smr/lib-use/) I am helping with.
 
 # Installing Ruby on Rails on Ubuntu 16.04 LTS
 * Use [this link](https://www.phusionpassenger.com/library/install/nginx/install/oss/xenial/) to install Nginx + Passenger.
