@@ -1,9 +1,7 @@
 class SurveyController < ApplicationController
 	def bg
 		# Keep track of session nbs
-		unless checkSessionNb(0,true)
-			return
-		end
+		unless checkSessionNb(0,true) then return end
 		UserStatus.create(UserID: session.id, Page: 0) # Using session nbs as an identifier is a security vunlerability
 		
 		@form = 'backgroundQuestions'
@@ -14,9 +12,7 @@ class SurveyController < ApplicationController
 	
 	def createBg
 		# Keep track of session nbs
-		unless checkSessionNb(0)
-			return
-		end
+		unless checkSessionNb(0,false) then return end
 		updateSessionNb(1)
 		
 		# hash = params['backgroundQuestions'].permit!.to_h # security vunlerability! (permitting all params)
@@ -25,9 +21,7 @@ class SurveyController < ApplicationController
 	end
 	
 	def thread1
-		unless checkSessionNb(1)
-			return
-		end
+		unless checkSessionNb(1,true) then return end
 		@form = 'thread1'
 		@threadID = '16122957'
 		@answerID = 'answer-16123196'
@@ -38,18 +32,14 @@ class SurveyController < ApplicationController
 	
 	def proceed1
 		# Keep track of session nbs
-		unless checkSessionNb(1)
-			return
-		end
+		unless checkSessionNb(1,false)then return end
 		updateSessionNb(2)
 		
 		redirect_to survey_thread2_path
 	end
 	
 	def thread2
-		unless checkSessionNb(2)
-			return
-		end
+		unless checkSessionNb(2,true) then return end
 		@form = 'thread2'
 		@threadID = '13414663'
 		@answerID = 'answer-25820121'
@@ -60,9 +50,7 @@ class SurveyController < ApplicationController
 	
 	def proceed2
 		# Keep track of session nbs
-		unless checkSessionNb(2)
-			return
-		end
+		unless checkSessionNb(2,false) then return end
 		updateSessionNb(3)
 		
 		# Save thread2 info
@@ -70,9 +58,8 @@ class SurveyController < ApplicationController
 	end
 	
 	def thread3
-		unless checkSessionNb(3)
-			return
-		end
+		unless checkSessionNb(3,true) then return end
+		puts '--------------------I am in thread3!'
 		@form = 'thread3'
 		@threadID = '28818597'
 		@answerID = 'answer-39967496'
@@ -83,9 +70,7 @@ class SurveyController < ApplicationController
 	
 	def proceed3
 		# Keep track of session nbs
-		unless checkSessionNb(3)
-			return
-		end
+		unless checkSessionNb(3,false) then return end
 		deleteSessionNb()
 		
 		# Save thread3 info
@@ -93,9 +78,11 @@ class SurveyController < ApplicationController
 	end
 	
 	private
-	def checkSessionNb(pageNb, isFirstUser=false)
+	def checkSessionNb(pageNb, isGet)
+		puts '----------------I am here'
 		begin 
 			user = UserStatus.find_by! UserID: session.id
+			puts '----------------No exception'
 			if user.Page == pageNb
 				return true
 			else
@@ -104,8 +91,14 @@ class SurveyController < ApplicationController
 				return false
 			end
 		rescue
-			return true if isFirstUser # If first page, return true so that calling method does not exit
-			return false
+			puts '----------------exception!'
+			if isGet and pageNb == 0 
+				# If new user on the first page, return true so that calling method does not exit
+				return true 
+			else
+				redirect_to pageNbToPath(0)
+				return false
+			end
 		end
 	end
 	
