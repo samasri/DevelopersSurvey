@@ -29,9 +29,10 @@ class SurveyController < ApplicationController
 			return
 		end
 		@form = 'thread1'
-		# TODO: Get each thread sentence from db
-		@sentence = 'Sentence 1'
-		@questions = {'id1'=>'Sentence1 Question1', 'id2'=>'Sentence1 Question2', 'id3'=>'Sentence1 Question3'}
+		@threadID = '16122957'
+		@answerID = 'answer-16123196'
+		@sentenceText = 'string content gets'
+		render :layout => false
 	end
 	
 	def create1
@@ -91,21 +92,25 @@ class SurveyController < ApplicationController
 			if user.Page == pageNb
 				return true
 			else
-				if user.Page == 0
-					path = survey_bg_path
-				elsif user.Page == 1
-					path = survey_thread1_path
-				elsif user.Page == 2
-					path = survey_thread2_path
-				elsif user.Page == 3
-					path = survey_thread3_path
-				end
+				path = pageNbToPath(user.Page)
 				redirect_to path
 				return false
 			end
 		rescue
 			return true if isFirstUser # If first page, return true so that calling method does not exit
 			return false
+		end
+	end
+	
+	def pageNbToPath(pageNb)
+		if pageNb == 0
+			return survey_bg_path
+		elsif pageNb == 1
+			return survey_thread1_path
+		elsif pageNb == 2
+			return survey_thread2_path
+		elsif pageNb == 3
+			return survey_thread3_path
 		end
 	end
 	
