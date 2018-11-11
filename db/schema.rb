@@ -10,7 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_11_091115) do
+ActiveRecord::Schema.define(version: 2018_11_11_102230) do
+
+  create_table "questions", id: false, force: :cascade do |t|
+    t.integer "questionID"
+    t.string "questionText"
+    t.string "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "responses", id: false, force: :cascade do |t|
+    t.integer "questionID"
+    t.string "userID"
+    t.integer "sentenceID"
+    t.text "response"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "sentences", id: false, force: :cascade do |t|
+    t.integer "sentenceID"
+    t.integer "threadID"
+    t.string "answerID"
+    t.text "sentenceText"
+    t.string "technique"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "tasks", force: :cascade do |t|
     t.string "title"
@@ -20,12 +47,12 @@ ActiveRecord::Schema.define(version: 2018_11_11_091115) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_statuses", force: :cascade do |t|
-    t.string "SessionNb"
-    t.integer "PageNb"
-    t.integer "Thread1"
-    t.integer "Thread2"
-    t.integer "Thread3"
+  create_table "user_statuses", id: false, force: :cascade do |t|
+    t.string "sessionNb"
+    t.integer "pageNb"
+    t.integer "thread1"
+    t.integer "thread2"
+    t.integer "thread3"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

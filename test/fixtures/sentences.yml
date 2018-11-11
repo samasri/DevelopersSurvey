@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sentenceID: 1
+  threadID: 1
+  answerID: MyString
+  sentenceText: MyText
+  technique: MyString
+
+two:
+  sentenceID: 1
+  threadID: 1
+  answerID: MyString
+  sentenceText: MyText
+  technique: MyString
