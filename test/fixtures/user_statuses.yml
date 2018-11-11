@@ -1,7 +1,15 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  UserID: MyString
+  SessionNb: MyString
+  PageNb: 1
+  Thread1: 1
+  Thread2: 1
+  Thread3: 1
 
 two:
-  UserID: MyString
+  SessionNb: MyString
+  PageNb: 1
+  Thread1: 1
+  Thread2: 1
+  Thread3: 1
