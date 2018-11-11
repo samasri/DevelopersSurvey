@@ -5,13 +5,13 @@ Rails.application.routes.draw do
 	post '/survey/bg', to: 'survey#createBg'
 	
 	get '/survey/thread1', to: 'survey#thread1'
-	post '/survey/thread1', to: 'survey#create1'
+	post '/survey/thread1', to: 'survey#proceed1'
 	
 	get '/survey/thread2', to: 'survey#thread2'
-	post '/survey/thread2', to: 'survey#create2'
+	post '/survey/thread2', to: 'survey#proceed2'
 	
 	get '/survey/thread3', to: 'survey#thread3'
-	post '/survey/thread3', to: 'survey#create3'
+	post '/survey/thread3', to: 'survey#proceed3'
 	
 	get '/done', to: 'survey#exit'
 end

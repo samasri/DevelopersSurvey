@@ -32,7 +32,7 @@
 - page.css('.pl8').each do |btn| btn.remove end # Remove 'Ask Question' button
 
 -# Highlighting quesitions
-- btn = link_to 'NextWorld!!', new_task_path, class: 'btn btn-primary', remote: true
+- btn = link_to 'Comment', new_task_path, class: 'btn btn-primary', remote: true
 - highlightedAnswer = page.css('#' + @answerID + ' p')[0].inner_html.gsub(@sentenceText, '<mark>' + @sentenceText + '</mark>' + btn)
 - page.css('#' + @answerID + ' p')[0].inner_html = highlightedAnswer
 
@@ -43,3 +43,4 @@
 - body.add_child(newDiv)
 
 = html = page.to_html.html_safe
+= link_to 'Next Thread', @nextPath, class: 'btn btn-primary', method: :post

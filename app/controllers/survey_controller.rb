@@ -32,10 +32,11 @@ class SurveyController < ApplicationController
 		@threadID = '16122957'
 		@answerID = 'answer-16123196'
 		@sentenceText = 'string content gets'
+		@nextPath = survey_thread1_path
 		render :layout => false
 	end
 	
-	def create1
+	def proceed1
 		# Keep track of session nbs
 		unless checkSessionNb(1)
 			return
@@ -50,11 +51,14 @@ class SurveyController < ApplicationController
 			return
 		end
 		@form = 'thread2'
-		@sentence = 'Sentence 2' # Get thread2 sentence
-		@questions = {'id1'=>'Sentence2 Question1', 'id2'=>'Sentence2 Question2', 'id3'=>'Sentence2 Question3'}
+		@threadID = '13414663'
+		@answerID = 'answer-25820121'
+		@sentenceText = 'In the example below'
+		@nextPath = survey_thread2_path
+		render :layout => false
 	end
 	
-	def create2
+	def proceed2
 		# Keep track of session nbs
 		unless checkSessionNb(2)
 			return
@@ -70,11 +74,14 @@ class SurveyController < ApplicationController
 			return
 		end
 		@form = 'thread3'
-		@sentence = 'Sentence 3' # Get thread3 sentence
-		@questions = {'id1'=>'Sentence3 Question1', 'id2'=>'Sentence3 Question2', 'id3'=>'Sentence3 Question3'}
+		@threadID = '28818597'
+		@answerID = 'answer-39967496'
+		@sentenceText = 'If you are on Ubuntu'
+		@nextPath = survey_thread3_path
+		render :layout => false
 	end
 	
-	def create3
+	def proceed3
 		# Keep track of session nbs
 		unless checkSessionNb(3)
 			return
