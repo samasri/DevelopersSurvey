@@ -2,7 +2,10 @@ class SurveyController < ApplicationController
 	def bg
 		# Keep track of session nbs
 		unless checkSessionNb(0,true) then return end
-		UserStatus.create(UserID: session.id, Page: 0) # Using session nbs as an identifier is a security vunlerability
+		
+		# Generate threads for new user
+		threads = generateThreads
+		UserStatus.create(sessionNb: session.id, pageNb: 0, thread1: threads[0], thread2: threads[1], thread3: threads[2]) # Using session nbs as an identifier is a security vunlerability
 		
 		@form = 'backgroundQuestions'
 		# TODO: Get background questions from db
@@ -22,8 +25,10 @@ class SurveyController < ApplicationController
 	
 	def thread1
 		unless checkSessionNb(1,true) then return end
+		
+		user = UserStatus.find(session.id)
 		@form = 'thread1'
-		@threadID = '16122957'
+		@threadID = user.thread1.to_s
 		@answerID = 'answer-16123196'
 		@sentenceText = 'string content gets'
 		@nextPath = survey_thread1_path
@@ -40,8 +45,10 @@ class SurveyController < ApplicationController
 	
 	def thread2
 		unless checkSessionNb(2,true) then return end
+		
+		user = UserStatus.find(session.id)
 		@form = 'thread2'
-		@threadID = '13414663'
+		@threadID = user.thread2.to_s
 		@answerID = 'answer-25820121'
 		@sentenceText = 'In the example below'
 		@nextPath = survey_thread2_path
@@ -59,9 +66,10 @@ class SurveyController < ApplicationController
 	
 	def thread3
 		unless checkSessionNb(3,true) then return end
-		puts '--------------------I am in thread3!'
+		
+		user = UserStatus.find(session.id)
 		@form = 'thread3'
-		@threadID = '28818597'
+		@threadID = user.thread3.to_s
 		@answerID = 'answer-39967496'
 		@sentenceText = 'If you are on Ubuntu'
 		@nextPath = survey_thread3_path
@@ -79,19 +87,16 @@ class SurveyController < ApplicationController
 	
 	private
 	def checkSessionNb(pageNb, isGet)
-		puts '----------------I am here'
 		begin 
-			user = UserStatus.find_by! UserID: session.id
-			puts '----------------No exception'
-			if user.Page == pageNb
+			user = UserStatus.find(session.id)
+			if user.pageNb == pageNb
 				return true
 			else
-				path = pageNbToPath(user.Page)
+				path = pageNbToPath(user.pageNb)
 				redirect_to path
 				return false
 			end
 		rescue
-			puts '----------------exception!'
 			if isGet and pageNb == 0 
 				# If new user on the first page, return true so that calling method does not exit
 				return true 
@@ -115,13 +120,18 @@ class SurveyController < ApplicationController
 	end
 	
 	def updateSessionNb(pageNb)
-		user = UserStatus.find_by! UserID: session.id
-		user.Page = pageNb
+		user = UserStatus.find(session.id)
+		puts "------------------I am updating: " + user.pageNb.to_s
+		user.pageNb = pageNb
 		user.save
 	end
 	
 	def deleteSessionNb
-		user = UserStatus.find_by! UserID: session.id
+		user = UserStatus.find(session.id)
 		user.delete
+	end
+	
+	def generateThreads
+		return ['16122957','13414663','28818597']
 	end
 end
