@@ -2,15 +2,17 @@ class SurveyController < ApplicationController
 	def bg
 		# Keep track of session nbs
 		unless checkSessionNb(0,true) then return end
+		session[:completed] = false
 		
+		# Using session nbs as an identifier is a security vunlerability
 		# Generate threads for new user
-		threads = generateThreads
-		UserStatus.create(sessionNb: session.id, pageNb: 0, thread1: threads[0], thread2: threads[1], thread3: threads[2]) # Using session nbs as an identifier is a security vunlerability
+		session[:threads] = generateThreads
+		session[:page] = 0 
 		
-		@form = 'backgroundQuestions'
+		@form = :backgroundQuestions
 		# TODO: Get background questions from db
 		@sentence = "Background Questions"
-		@questions = {'id1'=>'Background Question1', 'id2'=>'Background Question2', 'id3'=>'Background Question3'} 
+		@questions = {:id1=>'Background Question1', :id2=>'Background Question2', :id3=>'Background Question3'}
 	end
 	
 	def createBg
@@ -26,9 +28,8 @@ class SurveyController < ApplicationController
 	def thread1
 		unless checkSessionNb(1,true) then return end
 		
-		user = UserStatus.find(session.id)
-		@form = 'thread1'
-		@threadID = user.thread1.to_s
+		@form = :thread1
+		@threadID = session[:threads][0]
 		@answerID = 'answer-16123196'
 		@sentenceText = 'string content gets'
 		@nextPath = survey_thread1_path
@@ -46,10 +47,11 @@ class SurveyController < ApplicationController
 	def thread2
 		unless checkSessionNb(2,true) then return end
 		
-		user = UserStatus.find(session.id)
-		@form = 'thread2'
-		@threadID = user.thread2.to_s
+		@form = :thread2
+		@threadID = session[:threads][1]
+		puts "----------------------here's the threadID: " + @threadID
 		@answerID = 'answer-25820121'
+		puts "----------------------here's the answerID: " + @answerID
 		@sentenceText = 'In the example below'
 		@nextPath = survey_thread2_path
 		render :layout => false
@@ -67,9 +69,8 @@ class SurveyController < ApplicationController
 	def thread3
 		unless checkSessionNb(3,true) then return end
 		
-		user = UserStatus.find(session.id)
-		@form = 'thread3'
-		@threadID = user.thread3.to_s
+		@form = :thread3
+		@threadID = session[:threads][2]
 		@answerID = 'answer-39967496'
 		@sentenceText = 'If you are on Ubuntu'
 		@nextPath = survey_thread3_path
@@ -87,16 +88,15 @@ class SurveyController < ApplicationController
 	
 	private
 	def checkSessionNb(pageNb, isGet)
-		begin 
-			user = UserStatus.find(session.id)
-			if user.pageNb == pageNb
+		if session.key? :page and not session[:completed]
+			if session[:page] == pageNb then 
 				return true
 			else
-				path = pageNbToPath(user.pageNb)
+				path = pageNbToPath(session[:page])
 				redirect_to path
 				return false
 			end
-		rescue
+		else
 			if isGet and pageNb == 0 
 				# If new user on the first page, return true so that calling method does not exit
 				return true 
@@ -120,15 +120,11 @@ class SurveyController < ApplicationController
 	end
 	
 	def updateSessionNb(pageNb)
-		user = UserStatus.find(session.id)
-		puts "------------------I am updating: " + user.pageNb.to_s
-		user.pageNb = pageNb
-		user.save
+		session[:page] = pageNb
 	end
 	
 	def deleteSessionNb
-		user = UserStatus.find(session.id)
-		user.delete
+		session[:completed] = true
 	end
 	
 	def generateThreads
