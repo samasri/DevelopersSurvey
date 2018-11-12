@@ -12,28 +12,26 @@
 
 ActiveRecord::Schema.define(version: 2018_11_11_102230) do
 
-  create_table "questions", id: false, force: :cascade do |t|
-    t.integer "questionID"
-    t.string "questionText"
+  create_table "questions", force: :cascade do |t|
+    t.string "question_text"
     t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "responses", id: false, force: :cascade do |t|
-    t.integer "questionID"
-    t.string "userID"
-    t.integer "sentenceID"
+  create_table "responses", force: :cascade do |t|
+    t.integer "question_id"
+    t.string "user_id"
+    t.integer "sentence_id"
     t.text "response"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "sentences", id: false, force: :cascade do |t|
-    t.integer "sentenceID"
-    t.integer "threadID"
-    t.string "answerID"
-    t.text "sentenceText"
+  create_table "sentences", force: :cascade do |t|
+    t.integer "thread_id"
+    t.string "answer_id"
+    t.text "sentence_text"
     t.string "technique"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -43,16 +41,6 @@ ActiveRecord::Schema.define(version: 2018_11_11_102230) do
     t.string "title"
     t.text "note"
     t.date "completed"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "user_statuses", id: false, force: :cascade do |t|
-    t.string "sessionNb"
-    t.integer "pageNb"
-    t.integer "thread1"
-    t.integer "thread2"
-    t.integer "thread3"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
