@@ -16,14 +16,10 @@ This application uses MySQL database. To install that:
 * Follow [this post](https://stackoverflow.com/questions/50073498/ruby-on-rails-data-migration-from-sqlite3-to-mysql-regarding-to-many-to-many-rel) to connect the project to mysql2 to the database
 
 # Ruby on Rails Notes
-Since this is my first project in Ruby on Rails, I've taken some notes of how things go [here](https://github.com/samasri/DevelopersSurvey/blob/master/doc/RubyOnRailsNotes.md).
+Since this is my first project in Ruby on Rails, I've taken some notes of how things in RoR go [here](https://github.com/samasri/DevelopersSurvey/blob/master/doc/RubyOnRailsNotes.md).
 
 # Database
-The schema can be found [here](https://github.com/samasri/DevelopersSurvey/blob/master/doc/Database.png). The models can be initialized using the following commands:
-```
-rails generate model UserStatus UserID:string
-rake db:migrate RAILS_ENV=development
-```
+The schema can be found [here](https://github.com/samasri/DevelopersSurvey/blob/master/doc/Database.png). The models can be initialized using `rake db:migrate:reset`.
 
 # Features
 * Uses Ruby on Rails framework to 
