@@ -12,14 +12,14 @@
 
 ActiveRecord::Schema.define(version: 2018_11_11_102230) do
 
-  create_table "questions", force: :cascade do |t|
+  create_table "questions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "question_text"
-    t.string "type"
+    t.string "qtype"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "responses", force: :cascade do |t|
+  create_table "responses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "question_id"
     t.string "user_id"
     t.integer "sentence_id"
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 2018_11_11_102230) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "sentences", force: :cascade do |t|
+  create_table "sentences", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "thread_id"
     t.string "answer_id"
     t.text "sentence_text"
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 2018_11_11_102230) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "tasks", force: :cascade do |t|
+  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "title"
     t.text "note"
     t.date "completed"

@@ -1,7 +1,6 @@
 .container
 	.modal-header
 		%h1= @sentence
-		%h1= @hello
 	= simple_form_for @form, class: 'clearfix' do |f|
 		.modal-body
 			- @questions.each do |id,sentenceText|
