@@ -41,10 +41,10 @@
 - removeIfExist(page, '.pl8', true) # Remove 'Ask Question' button
 
 -# Highlighting quesitions
-- btn = link_to 'Comment', new_task_path, class: 'btn btn-primary', remote: true
 - @sentences.each do |answerID, sentenceTexts|
 	- sentenceTexts.each do |sentenceText|
-		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentenceText, '<mark>' + sentenceText + '</mark>' + btn)
+		- btn = link_to sentenceText, new_task_path, remote: true
+		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentenceText, '<mark>' + btn + '</mark>')
 		- page.css('#' + answerID + ' p')[0].inner_html = highlightedAnswer
 
 - # Adding modal div
