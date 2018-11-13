@@ -4,15 +4,16 @@ class SurveyController < ApplicationController
 		unless checkSessionNb(0,true) then return end
 		session[:completed] = false
 		
-		# Using session nbs as an identifier is a security vunlerability
 		# Generate threads for new user
 		session[:threads] = generateThreads
 		session[:page] = 0 
 		
-		@form = :backgroundQuestions
-		# TODO: Get background questions from db
-		@sentence = "Background Questions"
-		@questions = {:id1=>'Background Question1', :id2=>'Background Question2', :id3=>'Background Question3'}
+		# Get background questions from db
+		questions = Question.where ["qtype = ?", :bg]
+		@questions = {}
+		questions.each do |question|
+			@questions[question.id] = question.question_text
+		end
 	end
 	
 	def createBg
@@ -20,8 +21,8 @@ class SurveyController < ApplicationController
 		unless checkSessionNb(0,false) then return end
 		updateSessionNb(1)
 		
-		# hash = params['backgroundQuestions'].permit!.to_h # security vunlerability! (permitting all params)
 		# TODO: Save background info to db
+		# hash = params['backgroundQuestions'].permit!.to_h
 		redirect_to survey_thread1_path
 	end
 	
@@ -30,8 +31,7 @@ class SurveyController < ApplicationController
 		
 		@form = :thread1
 		@threadID = session[:threads][0]
-		@answerID = 'answer-16123196'
-		@sentenceText = 'string content gets'
+		@sentences = getSentences @threadID
 		@nextPath = survey_thread1_path
 		render :layout => false
 	end
@@ -49,10 +49,7 @@ class SurveyController < ApplicationController
 		
 		@form = :thread2
 		@threadID = session[:threads][1]
-		puts "----------------------here's the threadID: " + @threadID
-		@answerID = 'answer-25820121'
-		puts "----------------------here's the answerID: " + @answerID
-		@sentenceText = 'In the example below'
+		@sentences = getSentences @threadID
 		@nextPath = survey_thread2_path
 		render :layout => false
 	end
@@ -71,8 +68,7 @@ class SurveyController < ApplicationController
 		
 		@form = :thread3
 		@threadID = session[:threads][2]
-		@answerID = 'answer-39967496'
-		@sentenceText = 'If you are on Ubuntu'
+		@sentences = getSentences @threadID
 		@nextPath = survey_thread3_path
 		render :layout => false
 	end
@@ -128,6 +124,23 @@ class SurveyController < ApplicationController
 	end
 	
 	def generateThreads
-		return ['16122957','13414663','28818597']
+		sentences = Sentence.select(:thread_id).distinct.to_a
+		threadIDs = []
+		sentences.each do |sentence|
+			threadIDs.push(sentence.thread_id.to_s)
+		end
+		return threadIDs
+	end
+	
+	def getSentences(threadID)
+		sentences = Sentence.where ['thread_id = ?', threadID]
+		answerIDs = {}
+		sentences.each do |sentence|
+			unless answerIDs.key? sentence.answer_id 
+				answerIDs[sentence.answer_id] = [].to_set
+			end
+			answerIDs[sentence.answer_id].add(sentence.sentence_text)
+		end
+		return answerIDs
 	end
 end

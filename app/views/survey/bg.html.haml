@@ -1,7 +1,7 @@
 .container
 	.modal-header
-		%h1= @sentence
-	= simple_form_for @form, class: 'clearfix' do |f|
+		%h1 Background Questions
+	= simple_form_for :backgroundQuestions, class: 'clearfix' do |f|
 		.modal-body
 			- @questions.each do |id,sentenceText|
 				= f.input :"#{id}", :label=> "#{sentenceText}"

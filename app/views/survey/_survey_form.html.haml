@@ -17,24 +17,35 @@
 - additions += javascript_include_tag 'application'
 - additions += csrf_meta_tags
 - head.inner_html += additions
+-#
+- def removeIfExist(page, componentSpecifier, multiple = false)
+	- component = page.css(componentSpecifier)
+	- if multiple 
+		- unless component.empty?
+			- component.each do |cmp| cmp.remove end
+	- unless multiple
+		- unless component.empty?
+			- component[0].remove
 
 
 -# Removing unnecessary components
-- page.css('#left-sidebar')[0].remove
-- page.css('#js-gdpr-consent-banner')[0].remove
-- page.css('#dfp-tlb')[0].remove
-- page.css('#sidebar')[0].remove
-- page.css('#post-form')[0].remove
-- page.css('#tabs')[0].remove
-- page.css('#custom-header').each do |btn| btn.remove end
-- page.css('.comment-user').each do |comment| comment.remove end
-- page.css('.post-signature').each do |sig| sig.remove end
-- page.css('.pl8').each do |btn| btn.remove end # Remove 'Ask Question' button
+- removeIfExist(page, '#left-sidebar')
+- removeIfExist(page, '#js-gdpr-consent-banner')
+- removeIfExist(page, '#dfp-tlb')
+- removeIfExist(page, '#sidebar')
+- removeIfExist(page, '#post-form')
+- removeIfExist(page, '#tabs')
+- removeIfExist(page, '#custom-header', true)
+- removeIfExist(page, '.comment-user', true)
+- removeIfExist(page, '.post-signature', true)
+- removeIfExist(page, '.pl8', true) # Remove 'Ask Question' button
 
 -# Highlighting quesitions
 - btn = link_to 'Comment', new_task_path, class: 'btn btn-primary', remote: true
-- highlightedAnswer = page.css('#' + @answerID + ' p')[0].inner_html.gsub(@sentenceText, '<mark>' + @sentenceText + '</mark>' + btn)
-- page.css('#' + @answerID + ' p')[0].inner_html = highlightedAnswer
+- @sentences.each do |answerID, sentenceTexts|
+	- sentenceTexts.each do |sentenceText|
+		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentenceText, '<mark>' + sentenceText + '</mark>' + btn)
+		- page.css('#' + answerID + ' p')[0].inner_html = highlightedAnswer
 
 - # Adding modal div
 - newDiv = Nokogiri::XML::Node.new('div', page)

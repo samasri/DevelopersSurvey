@@ -26,5 +26,9 @@ The schema can be found [here](https://github.com/samasri/DevelopersSurvey/blob/
 * Presents questions to users in forms and collects the information
 * Keeps track of users through Session IDs to ensure seamless flow of the form in case of interruptions like mistakenly closing or reloading the page submitting
 
+# Known Constraints
+* Session numbers are used to identify users; this is a security vunlerability
+* Saving information from the forms is done by blindly permitting all parameters. This is a security vunlerability
+
 # Test Suit
 Test suit still not developed
