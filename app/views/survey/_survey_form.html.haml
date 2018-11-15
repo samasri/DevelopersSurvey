@@ -42,9 +42,12 @@
 
 -# Highlighting quesitions
 - @sentences.each do |answerID, sentenceTexts|
-	- sentenceTexts.each do |sentenceText|
-		- btn = link_to sentenceText, new_task_path, remote: true
-		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentenceText, '<mark>' + btn + '</mark>')
+	- sentenceTexts.each do |sentenceContainer|
+		- sentence_id = sentenceContainer[0]
+		- sentence_text = sentenceContainer[1]
+		- btn = link_to sentence_text, responses_new_path(:picked_sentence => { :sentence_id => sentence_id.to_s}), remote: true
+		- sentenceReplacement = '<mark>' + btn + '</mark>'
+		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentence_text, sentenceReplacement)
 		- page.css('#' + answerID + ' p')[0].inner_html = highlightedAnswer
 
 - # Adding modal div

@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
 	root to: 'pages#home'
 	resources :tasks,  except:  [:index]
+	
+	get '/responses/new', to: 'responses#new'
+	post '/responses/new', to: 'responses#create'
+	
 	get '/survey/bg', to: 'survey#bg'
 	post '/survey/bg', to: 'survey#createBg'
 	

@@ -1,0 +1,8 @@
+.modal-header
+	%h1 New Response
+= simple_form_for :responses, class: 'clearfix' do |f|
+	.modal-body
+		- @questions.each do |id,sentenceText|
+			= f.input :"#{id}", :label=> "#{sentenceText}"
+	.modal-footer
+		= f.submit 'Next', class: 'btn btn-primary'

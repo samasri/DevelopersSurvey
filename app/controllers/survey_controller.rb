@@ -22,7 +22,14 @@ class SurveyController < ApplicationController
 		updateSessionNb(1)
 		
 		# TODO: Save background info to db
-		# hash = params['backgroundQuestions'].permit!.to_h
+		answers = params[:backgroundQuestions].permit!.to_h
+		puts '------------- Background Questions ----------------'
+		puts 'UserID: ' + session.id
+		puts 'QuestionID --> Response'
+		answers.each do |id, answer|
+			puts id + '-->' + answer
+		end
+		puts '----------------------------------------------------'
 		redirect_to survey_thread1_path
 	end
 	
@@ -30,6 +37,7 @@ class SurveyController < ApplicationController
 		unless checkSessionNb(1,true) then return end
 		
 		@form = :thread1
+		@user_id = session[:id]
 		@threadID = session[:threads][0]
 		@sentences = getSentences @threadID
 		@nextPath = survey_thread1_path
@@ -134,12 +142,12 @@ class SurveyController < ApplicationController
 	
 	def getSentences(threadID)
 		sentences = Sentence.where ['thread_id = ?', threadID]
-		answerIDs = {}
+		answerIDs = {} # Map: answer_id --> [sentence_id, sentence_text]
 		sentences.each do |sentence|
 			unless answerIDs.key? sentence.answer_id 
 				answerIDs[sentence.answer_id] = [].to_set
 			end
-			answerIDs[sentence.answer_id].add(sentence.sentence_text)
+			answerIDs[sentence.answer_id].add([sentence.id,sentence.sentence_text])
 		end
 		return answerIDs
 	end
