@@ -1,4 +1,6 @@
 class SurveyController < ApplicationController
+	include AddResponse
+	
 	def bg
 		# Keep track of session nbs
 		unless checkSessionNb(0,true) then return end
@@ -23,13 +25,8 @@ class SurveyController < ApplicationController
 		
 		# TODO: Save background info to db
 		answers = params[:backgroundQuestions].permit!.to_h
-		puts '------------- Background Questions ----------------'
-		puts 'UserID: ' + session.id
-		puts 'QuestionID --> Response'
-		answers.each do |id, answer|
-			puts id + '-->' + answer
-		end
-		puts '----------------------------------------------------'
+		userID = session.id
+		addResponse('Background Questions', answers, userID)
 		redirect_to survey_thread1_path
 	end
 	

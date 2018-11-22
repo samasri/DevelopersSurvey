@@ -1,4 +1,5 @@
 class ResponsesController < ApplicationController
+	include AddResponse
 	def new
 		@response = :response
 		session[:picked_sentence] = params[:picked_sentence][:sentence_id]
@@ -11,17 +12,11 @@ class ResponsesController < ApplicationController
 	
 	def create
 		# TODO: Save background info to db
-		sentence_id = session[:picked_sentence]
-		user_id = session.id
+		sentenceID = session[:picked_sentence]
+		userID = session.id
 		answers = params['responses'].permit!.to_h # questionID --> answer
-		puts '--------------- Thread Questions --------------'
-		puts 'UserID: ' + user_id
-		puts 'SentenceID: ' + sentence_id
-		puts 'QuestionID --> Response'
-		answers.each do |id, answer|
-			puts id + '-->' + answer
-		end
-		puts '------------------------------------------------'
+		
+		addResponse('Thread Questions', answers, userID, sentenceID)
 		redirect_to survey_thread1_path
 	end
 end

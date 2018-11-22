@@ -18,7 +18,9 @@
 - additions += csrf_meta_tags
 - head.inner_html += additions
 -#
-- def removeIfExist(page, componentSpecifier, multiple = false)
+- def removeIfExist(page, componentSpecifier)
+	- multiple = false
+	- if componentSpecifier[0] == '.' then multiple = true end
 	- component = page.css(componentSpecifier)
 	- if multiple 
 		- unless component.empty?
@@ -35,10 +37,11 @@
 - removeIfExist(page, '#sidebar')
 - removeIfExist(page, '#post-form')
 - removeIfExist(page, '#tabs')
-- removeIfExist(page, '#custom-header', true)
-- removeIfExist(page, '.comment-user', true)
-- removeIfExist(page, '.post-signature', true)
-- removeIfExist(page, '.pl8', true) # Remove 'Ask Question' button
+- removeIfExist(page, '#custom-header')
+- removeIfExist(page, '#dfp-mlb') # Remove empty div space
+- removeIfExist(page, '.comment-user')
+- removeIfExist(page, '.post-signature')
+- removeIfExist(page, '.pl8') # Remove 'Ask Question' button
 
 -# Highlighting quesitions
 - @sentences.each do |answerID, sentenceTexts|
@@ -48,7 +51,7 @@
 		- btn = link_to sentence_text, responses_new_path(:picked_sentence => { :sentence_id => sentence_id.to_s}), remote: true
 		- sentenceReplacement = '<mark>' + btn + '</mark>'
 		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentence_text, sentenceReplacement)
-		- page.css('#' + answerID + ' p')[0].inner_html = highlightedAnswer
+		- page.css('#' + answerID)[0].inner_html = highlightedAnswer
 
 - # Adding modal div
 - newDiv = Nokogiri::XML::Node.new('div', page)
@@ -58,3 +61,4 @@
 
 = html = page.to_html.html_safe
 = link_to 'Next Thread', @nextPath, class: 'btn btn-primary', method: :post
+%h1= @remove
