@@ -7,9 +7,10 @@ class SurveyController < ApplicationController
 		session[:completed] = false
 		
 		# Generate threads + initialize session for new user
-		session[:threads] = generateThreads
-		session[:page] = 0
-		session[:answeredSentences] = Array.new
+		session[:threads] = generateThreads # The threads that this user will be assessing 
+		session[:page] = 0 # To keep track of completed pages
+		session[:answeredSentences] = [] # IDs of all sentences whose questions have been already answered
+		session[:toAnswer] = [] # IDs of sentences that should be assessed so far to go to next page
 		
 		# Get background questions from db
 		questions = Question.where ["qtype = ?", :bg]
@@ -24,7 +25,6 @@ class SurveyController < ApplicationController
 		unless checkSessionNb(0,false) then return end
 		updateSessionNb(1)
 		
-		# TODO: Save background info to db
 		answers = params[:backgroundQuestions].permit!.to_h
 		userID = session.id
 		addResponse('Background Questions', answers, userID)
@@ -37,7 +37,9 @@ class SurveyController < ApplicationController
 		@form = :thread1
 		@user_id = session[:id]
 		@threadID = session[:threads][0]
-		@sentences = getSentences @threadID
+		@sentences = getThreadSentenceMapping @threadID
+		session[:toAnswer] += getSentenceIDs @threadID
+		session[:toAnswer] &= getSentenceIDs @threadID
 		@nextPath = survey_thread1_path
 		render :layout => false
 	end
@@ -55,7 +57,9 @@ class SurveyController < ApplicationController
 		
 		@form = :thread2
 		@threadID = session[:threads][1]
-		@sentences = getSentences @threadID
+		@sentences = getThreadSentenceMapping @threadID
+		session[:toAnswer] += getSentenceIDs @threadID
+		session[:toAnswer] &= getSentenceIDs @threadID
 		@nextPath = survey_thread2_path
 		render :layout => false
 	end
@@ -74,7 +78,9 @@ class SurveyController < ApplicationController
 		
 		@form = :thread3
 		@threadID = session[:threads][2]
-		@sentences = getSentences @threadID
+		@sentences = getThreadSentenceMapping @threadID
+		session[:toAnswer] += getSentenceIDs @threadID
+		session[:toAnswer] &= getSentenceIDs @threadID
 		@nextPath = survey_thread3_path
 		render :layout => false
 	end
@@ -138,7 +144,7 @@ class SurveyController < ApplicationController
 		return threadIDs
 	end
 	
-	def getSentences(threadID)
+	def getThreadSentenceMapping(threadID)
 		sentences = Sentence.where ['thread_id = ?', threadID]
 		answerIDs = {} # Map: answer_id --> [sentence_id, sentence_text]
 		sentences.each do |sentence|
@@ -148,5 +154,14 @@ class SurveyController < ApplicationController
 			answerIDs[sentence.answer_id].add([sentence.id,sentence.sentence_text])
 		end
 		return answerIDs
+	end
+	
+	def getSentenceIDs(threadID)
+		sentences = Sentence.where ['thread_id = ?', threadID]
+		sentenceIDs = Set.new
+		sentences.each do |sentence|
+			sentenceIDs.add(sentence.id)
+		end
+		return sentenceIDs.to_a
 	end
 end

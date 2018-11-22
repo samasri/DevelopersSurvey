@@ -70,5 +70,11 @@
 
 = html = page.to_html.html_safe
 - # Add Button to navigate to the next thread
-= link_to 'Next Thread', @nextPath, class: 'btn btn-primary', method: :post
-%h1= @remove
+- questionsLeft = session[:toAnswer] - session[:answeredSentences]
+- if questionsLeft.count == 0
+	= link_to 'Next Thread', @nextPath, class: 'btn btn-primary', method: :post
+- else
+	.btn.btn-primary
+		Answer
+		= questionsLeft.count
+		more sentences to proceed

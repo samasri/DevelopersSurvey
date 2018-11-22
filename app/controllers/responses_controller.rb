@@ -11,12 +11,12 @@ class ResponsesController < ApplicationController
 	end
 	
 	def create
-		# TODO: Save background info to db
 		sentenceID = session[:picked_sentence]
 		userID = session.id
-		answers = params['responses'].permit!.to_h # questionID --> answer
 		
+		answers = params['responses'].permit!.to_h # questionID --> answer
 		addResponse('Thread Questions', answers, userID, sentenceID)
+		
 		redirect_to survey_thread1_path
 	end
 end
