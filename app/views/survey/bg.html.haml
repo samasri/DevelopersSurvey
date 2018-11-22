@@ -4,6 +4,7 @@
 	= simple_form_for :backgroundQuestions, class: 'clearfix' do |f|
 		.modal-body
 			- @questions.each do |id,sentenceText|
-				= f.input :"#{id}", :label=> "#{sentenceText}"
+				- isRequired = @questionRequirement[id]
+				= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired
 		.modal-footer
 			= f.submit 'Next', class: 'btn btn-primary'

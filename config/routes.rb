@@ -8,6 +8,9 @@ Rails.application.routes.draw do
 	get '/survey/bg', to: 'survey#bg'
 	post '/survey/bg', to: 'survey#createBg'
 	
+	get '/survey/instructions', to: 'survey#instructions'
+	post '/survey/proceedToThreads', to: 'survey#proceedToThreads'
+	
 	get '/survey/thread1', to: 'survey#thread1'
 	post '/survey/thread1', to: 'survey#proceed1'
 	

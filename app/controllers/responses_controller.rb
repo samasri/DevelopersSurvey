@@ -5,8 +5,10 @@ class ResponsesController < ApplicationController
 		session[:picked_sentence] = params[:picked_sentence][:sentence_id]
 		questions = Question.where ['qtype = ?', :sg]
 		@questions = {}
+		@questionRequirement = {}
 		questions.each do |question|
 			@questions[question.id] = question.question_text
+			@questionRequirement[question.id] = question.mandatory
 		end
 	end
 	

@@ -3,6 +3,7 @@ class CreateQuestions < ActiveRecord::Migration[5.2]
     create_table :questions do |t|
       t.string :question_text
       t.string :qtype
+			t.boolean :mandatory
 
       t.timestamps
     end

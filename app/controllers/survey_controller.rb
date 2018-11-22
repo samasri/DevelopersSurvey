@@ -15,8 +15,10 @@ class SurveyController < ApplicationController
 		# Get background questions from db
 		questions = Question.where ["qtype = ?", :bg]
 		@questions = {}
+		@questionRequirement = {}
 		questions.each do |question|
 			@questions[question.id] = question.question_text
+			@questionRequirement[question.id] = question.mandatory
 		end
 	end
 	
@@ -28,11 +30,20 @@ class SurveyController < ApplicationController
 		answers = params[:backgroundQuestions].permit!.to_h
 		userID = session.id
 		addResponse('Background Questions', answers, userID)
+		redirect_to survey_instructions_path
+	end
+	
+	def instructions
+		unless checkSessionNb(1,true) then return end
+	end
+	
+	def proceedToThreads
+		updateSessionNb(2)
 		redirect_to survey_thread1_path
 	end
 	
 	def thread1
-		unless checkSessionNb(1,true) then return end
+		unless checkSessionNb(2,true) then return end
 		
 		@form = :thread1
 		@user_id = session[:id]
@@ -46,14 +57,14 @@ class SurveyController < ApplicationController
 	
 	def proceed1
 		# Keep track of session nbs
-		unless checkSessionNb(1,false)then return end
-		updateSessionNb(2)
+		unless checkSessionNb(2,false)then return end
+		updateSessionNb(3)
 		
 		redirect_to survey_thread2_path
 	end
 	
 	def thread2
-		unless checkSessionNb(2,true) then return end
+		unless checkSessionNb(3,true) then return end
 		
 		@form = :thread2
 		@threadID = session[:threads][1]
@@ -66,15 +77,15 @@ class SurveyController < ApplicationController
 	
 	def proceed2
 		# Keep track of session nbs
-		unless checkSessionNb(2,false) then return end
-		updateSessionNb(3)
+		unless checkSessionNb(3,false) then return end
+		updateSessionNb(4)
 		
 		# Save thread2 info
 		redirect_to survey_thread3_path
 	end
 	
 	def thread3
-		unless checkSessionNb(3,true) then return end
+		unless checkSessionNb(4,true) then return end
 		
 		@form = :thread3
 		@threadID = session[:threads][2]
@@ -87,7 +98,7 @@ class SurveyController < ApplicationController
 	
 	def proceed3
 		# Keep track of session nbs
-		unless checkSessionNb(3,false) then return end
+		unless checkSessionNb(4,false) then return end
 		deleteSessionNb()
 		
 		# Save thread3 info
@@ -119,10 +130,12 @@ class SurveyController < ApplicationController
 		if pageNb == 0
 			return survey_bg_path
 		elsif pageNb == 1
-			return survey_thread1_path
+			return survey_instructions_path
 		elsif pageNb == 2
-			return survey_thread2_path
+			return survey_thread1_path
 		elsif pageNb == 3
+			return survey_thread2_path
+		elsif pageNb == 4
 			return survey_thread3_path
 		end
 	end
