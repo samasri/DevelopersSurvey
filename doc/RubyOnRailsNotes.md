@@ -16,9 +16,11 @@
 * Create a model or a database table: `rails generate model [name-of-table] [columnName]:[type] [column2Name]:[type]...`
 	* Example: `rails generate model Task title:string note:text completed:date` creates a table named `Task` with 3 columns: Title, Note, and Completed
 * `rails console` opens a Ruby interpreter console that can be used to manipulate the database
-* Running `rails generate model...` creates a migration file in _db/migration/_, this migration can be editted to fit the requirements of the database:
+* Running `rails generate model...` creates a migration file in _db/migrate/_, this migration can be editted to fit the requirements of the database:
 	* The `create_table` function inside any of the ruby files in that directory can take multiple parameters specified [here](https://apidock.com/rails/ActiveRecord/ConnectionAdapters/SchemaStatements/create_table). Here is where a customized primary key can be set. However, according to RoR developers ([StackOverFlow answer1](https://stackoverflow.com/questions/41888549/how-to-implement-composite-primary-keys-in-rails) and [StackOverFlow answer2](https://stackoverflow.com/questions/11114627/how-to-set-composite-key-in-rails-application)) it is not advised to set customized primary keys.
-	* Adding foreign keys can happen by adding a call to `add_foreign_key` in the ruby migration files. It is advised to use naming conventions when naming table columns since `add_foreign_key` makes use of that when taking its parameters as show in [this documentation](https://apidock.com/rails/ActiveRecord/ConnectionAdapters/SchemaStatements/add_foreign_key) (passing only table names to `add_foreign_key` can be enough since RoR automatically generates column names of referenced columns if named according to conventions).
+	* To add a foreign key:
+		* Declare the foreign key column to type `references` when creating the model. For example, if we want to generate a model called `Task` that has a key to model `Unit`, the following query should b executed `rails generate model Task unit:references`. 
+		* Add `add_foreign_key :tasks, :units` in the generated migration file inside class `CreateTasks` (but outside the foreach loop).
 * To migrate (ie: apply the generated model into an actual database), run `rake db:migrate RAILS_ENV=development` (SQLLite3 is the default database used).
 * Run `rake db:migrate:reset` to reset the database (drop all tables and build the database again). `rake db:reset` can also help in some cases. The difference between them can be found [here](https://stackoverflow.com/questions/10301794/difference-between-rake-dbmigrate-dbreset-and-dbschemaload).
 
