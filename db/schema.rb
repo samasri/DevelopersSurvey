@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_11_102230) do
+ActiveRecord::Schema.define(version: 2018_11_22_052003) do
 
   create_table "questions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "question_text"
@@ -20,29 +20,26 @@ ActiveRecord::Schema.define(version: 2018_11_11_102230) do
   end
 
   create_table "responses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "question_id"
+    t.bigint "question_id"
     t.string "user_id"
-    t.integer "sentence_id"
-    t.text "response"
+    t.bigint "sentence_id"
+    t.string "response"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["question_id", "user_id", "sentence_id"], name: "index_responses_on_question_id_and_user_id_and_sentence_id", unique: true
+    t.index ["question_id"], name: "index_responses_on_question_id"
+    t.index ["sentence_id"], name: "index_responses_on_sentence_id"
   end
 
   create_table "sentences", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "thread_id"
     t.string "answer_id"
-    t.text "sentence_text"
+    t.string "sentence_text"
     t.string "technique"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "title"
-    t.text "note"
-    t.date "completed"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
+  add_foreign_key "responses", "questions"
+  add_foreign_key "responses", "sentences"
 end

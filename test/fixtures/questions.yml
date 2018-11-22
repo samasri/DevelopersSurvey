@@ -1,11 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  questionID: 1
-  questionText: MyString
-  type: 
+  question_text: MyString
+  qtype: MyString
 
 two:
-  questionID: 1
-  questionText: MyString
-  type: 
+  question_text: MyString
+  qtype: MyString

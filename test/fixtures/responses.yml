@@ -1,13 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  QuestionID: 1
-  UserID: MyString
-  SentenceID: 1
-  Response: MyText
+  question: 
+  user_id: MyString
+  sentence_id: 
+  technique: MyString
 
 two:
-  QuestionID: 1
-  UserID: MyString
-  SentenceID: 1
-  Response: MyText
+  question: 
+  user_id: MyString
+  sentence_id: 
+  technique: MyString

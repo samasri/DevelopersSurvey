@@ -1,15 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  sentenceID: 1
-  threadID: 1
-  answerID: MyString
-  sentenceText: MyText
+  thread_id: 1
+  answer_id: MyString
+  sentence_text: MyString
   technique: MyString
 
 two:
-  sentenceID: 1
-  threadID: 1
-  answerID: MyString
-  sentenceText: MyText
+  thread_id: 1
+  answer_id: MyString
+  sentence_text: MyString
   technique: MyString
