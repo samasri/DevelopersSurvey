@@ -31,10 +31,10 @@
 
 
 -# Removing unnecessary components
-- removeIfExist(page, '#left-sidebar')
+-# removeIfExist(page, '#left-sidebar')
+-# removeIfExist(page, '#sidebar')
 - removeIfExist(page, '#js-gdpr-consent-banner')
 - removeIfExist(page, '#dfp-tlb')
-- removeIfExist(page, '#sidebar')
 - removeIfExist(page, '#post-form')
 - removeIfExist(page, '#tabs')
 - removeIfExist(page, '#custom-header')
@@ -56,25 +56,39 @@
 		- searchResult = searchArray(session[:answeredSentences], sentence_id)
 		- if searchResult # Responses for this sentence have already been submitted
 			- sentenceReplacement = '<mark style="background-color: grey">' + sentence_text + '</mark>'
-		- unless searchResult # Responses for this sentence have not been submitted yet
+		- else # Responses for this sentence have not been submitted yet
 			- btn = link_to sentence_text, responses_new_path(:picked_sentence => { :sentence_id => sentence_id.to_s}), remote: true
 			- sentenceReplacement = '<mark>' + btn + '</mark>'
 		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentence_text, sentenceReplacement)
 		- page.css('#' + answerID)[0].inner_html = highlightedAnswer
 
-- # Adding modal div
-- newDiv = Nokogiri::XML::Node.new('div', page)
-- newDiv['class'] = 'modal fade'
-- newDiv['id'] = 'modal'
-- body.add_child(newDiv)
+-# Calculate the number of highlighted sentences that the user have to address to continue
+- questionsLeft = session[:toAnswer] - session[:answeredSentences]
+- questionsLeft = questionsLeft.count
+
+-# Reuse right side bar for response form
+- rightSideBar = page.css('#sidebar')[0]
+- rightSideBar[:class] = 'left-sidebar--sticky-container js-sticky-leftnav'
+- unless questionsLeft == 0
+	- rightSideBar.inner_html = '<h1> Click on a highlighted sentence to get questions (' + questionsLeft.to_s + ' sentences left) </h1>'
+- else
+	- rightSideBar.inner_html = '<h1> All sentences are Answered. Click on "Next Thread" button on the left to continue </h1>'
+
+-# Reuse left side bar for a navigation button
+- leftSideBar = page.css('#left-sidebar')
+- if leftSideBar.empty? then # Not a thread page, ignore it
+- else
+	-# Delete all divs inside the left side bar
+	- leftSideBar = leftSideBar[0]
+	- leftSideBar.children.each do |child| child.remove end
+	-# Create new button and add it to the left side bar
+	- btn = Nokogiri::XML::Node.new('div', page)
+	- btn['class'] = 'left-sidebar--sticky-container js-sticky-leftnav btn btn-primary'
+	- leftSideBar.add_child(btn)
+	-# Fill button with the right HTML
+	- if questionsLeft == 0
+		- btn.inner_html = link_to 'Next Thread', @nextPath, method: :post
+	- else
+		- btn.inner_html = 'Answer ' + questionsLeft.to_s + ' more sentences to proceed'
 
 = html = page.to_html.html_safe
-- # Add Button to navigate to the next thread
-- questionsLeft = session[:toAnswer] - session[:answeredSentences]
-- if questionsLeft.count == 0
-	= link_to 'Next Thread', @nextPath, class: 'btn btn-primary', method: :post
-- else
-	.btn.btn-primary
-		Answer
-		= questionsLeft.count
-		more sentences to proceed
