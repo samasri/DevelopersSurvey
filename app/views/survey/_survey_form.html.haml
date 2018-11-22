@@ -43,13 +43,22 @@
 - removeIfExist(page, '.post-signature')
 - removeIfExist(page, '.pl8') # Remove 'Ask Question' button
 
--# Highlighting quesitions
+-# Highlighting questions
+- def searchArray(arr, key)
+	- arr.each do |a|
+		- if a.to_s == key.to_s then return true end
+	- return false
+
 - @sentences.each do |answerID, sentenceTexts|
 	- sentenceTexts.each do |sentenceContainer|
 		- sentence_id = sentenceContainer[0]
-		- sentence_text = sentenceContainer[1]
-		- btn = link_to sentence_text, responses_new_path(:picked_sentence => { :sentence_id => sentence_id.to_s}), remote: true
-		- sentenceReplacement = '<mark>' + btn + '</mark>'
+		- sentence_text = sentenceContainer[1]	
+		- searchResult = searchArray(session[:answeredSentences], sentence_id)
+		- if searchResult # Responses for this sentence have already been submitted
+			- sentenceReplacement = '<mark style="background-color: grey">' + sentence_text + '</mark>'
+		- unless searchResult # Responses for this sentence have not been submitted yet
+			- btn = link_to sentence_text, responses_new_path(:picked_sentence => { :sentence_id => sentence_id.to_s}), remote: true
+			- sentenceReplacement = '<mark>' + btn + '</mark>'
 		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentence_text, sentenceReplacement)
 		- page.css('#' + answerID)[0].inner_html = highlightedAnswer
 
@@ -60,5 +69,6 @@
 - body.add_child(newDiv)
 
 = html = page.to_html.html_safe
+- # Add Button to navigate to the next thread
 = link_to 'Next Thread', @nextPath, class: 'btn btn-primary', method: :post
 %h1= @remove

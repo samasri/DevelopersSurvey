@@ -6,9 +6,10 @@ class SurveyController < ApplicationController
 		unless checkSessionNb(0,true) then return end
 		session[:completed] = false
 		
-		# Generate threads for new user
+		# Generate threads + initialize session for new user
 		session[:threads] = generateThreads
-		session[:page] = 0 
+		session[:page] = 0
+		session[:answeredSentences] = Array.new
 		
 		# Get background questions from db
 		questions = Question.where ["qtype = ?", :bg]
