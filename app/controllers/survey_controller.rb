@@ -113,12 +113,16 @@ class SurveyController < ApplicationController
 	
 	def proceedToThankyou
 		unless checkSessionNb(5,false) then return end
-		deleteSessionNb()
+		updateSessionNb(6)
 		
 		redirect_to done_path
 	end
 	
 	def thankyou
+		unless checkSessionNb(6,true) then return end
+		deleteSessionNb()
+		
+		@sessionNb = session.id
 	
 	end
 	
