@@ -2,10 +2,13 @@
 This project was adapted from [this tutorial](https://iridakos.com/tutorials/2013/12/07/creating-a-simple-todo-part-1.html) and the code it refers to. However, it was changed and customized to become a survey presented for developers to get their opinions about specific replies on StackOverflow questions. It is my first Ruby on Rails project and will be used to help in a [research project](https://sarahnadi.org/smr/lib-use/) I am helping with.
 
 # Installing MySQL and connecting it to project
-You can use the [installation guide](https://github.com/samasri/DevelopersSurvey/wiki/Installation-Guide) to set up Ruby on Rails on Nginx and Passenger and MySQL
+You can use the [installation guide](https://github.com/samasri/DevelopersSurvey/wiki/Installation-Guide) to set up Ruby on Rails on Nginx and Passenger and MySQL.
 
 # Ruby on Rails Notes
 Since this is my first project in Ruby on Rails, I've taken some notes of how things in RoR go [here](https://github.com/samasri/DevelopersSurvey/blob/master/doc/RubyOnRailsNotes.md).
+
+# Assumptions
+The assumptions we are aware of are documented [here](https://github.com/samasri/DevelopersSurvey/blob/master/doc/Assumptions.md)
 
 # Database
 The schema can be found [here](https://github.com/samasri/DevelopersSurvey/blob/master/doc/Database.png). The models can be initialized using `rake db:migrate:reset`.

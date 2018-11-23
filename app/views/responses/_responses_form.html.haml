@@ -1,9 +1,17 @@
 .modal-header
-	%h1 Thinking of the sentence you just clicked on, please answer the following questions
+	%h3 Thinking of the sentence you just clicked on, please answer the following questions
 = simple_form_for :responses, class: 'clearfix' do |f|
 	.modal-body
 		- @questions.each do |id,sentenceText|
 			- isRequired = @questionRequirement[id]
-			= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired
+			- isMultiple = false
+			- logger.debug "Parsing sentence, length: " + @questions.count.to_s
+			- if sentenceText.include? '||' # Question is a multiple choice question
+				- isMultiple = true
+				- choices = sentenceText.split(' || ')
+				- sentenceText = choices.shift
+				= f.input :"#{id}", :label=> "#{sentenceText}", :collection => choices, required: isRequired
+			- else
+				= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired
 	.modal-footer
-		= f.submit 'Next', class: 'btn btn-primary'
+		= f.submit 'Submit', class: 'btn btn-primary'
