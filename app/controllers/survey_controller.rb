@@ -107,7 +107,7 @@ class SurveyController < ApplicationController
 		
 		# Initialize member fields
 		fetchQuestions(["qtype = ?", :eg])
-		@title = 'Background Questions'
+		@title = 'Feedback'
 		@formName = :backgroundQuestions
 	end
 	

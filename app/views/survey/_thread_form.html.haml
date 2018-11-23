@@ -74,7 +74,7 @@
 - else
 	- rightSideBar.inner_html = '<h1> All sentences are Answered. Click on "Next Thread" button on the left to continue </h1>'
 
-# Change width ratio between main div and right sidebar (now used as form)
+-# Change width ratio between main div and right sidebar (now used as form)
 - rightSideBar[:style] = 'width: 400px;'
 - page.css('#mainbar')[0][:style] = 'width: calc(100% - 400px - 24px);'
 
@@ -87,12 +87,13 @@
 	- leftSideBar.children.each do |child| child.remove end
 	-# Create new button and add it to the left side bar
 	- btn = Nokogiri::XML::Node.new('div', page)
-	- btn['class'] = 'left-sidebar--sticky-container js-sticky-leftnav btn btn-primary'
+	- btn['class'] = 'left-sidebar--sticky-container js-sticky-leftnav'
 	- leftSideBar.add_child(btn)
 	-# Fill button with the right HTML
 	- if questionsLeft == 0
-		- btn.inner_html = link_to 'Next Thread', @nextPath, method: :post, style: 'color: white'
+		- btn.inner_html = link_to 'Next Thread', @nextPath, method: :post, style: 'color: white', class: 'btn btn-primary'
 	- else
 		- btn.inner_html = 'Answer ' + questionsLeft.to_s + ' more sentences to proceed'
+		- btn[:class] = 'btn btn-primary'
 
 = html = page.to_html.html_safe
