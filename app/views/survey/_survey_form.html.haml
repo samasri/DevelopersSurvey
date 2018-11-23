@@ -87,7 +87,7 @@
 	- leftSideBar.add_child(btn)
 	-# Fill button with the right HTML
 	- if questionsLeft == 0
-		- btn.inner_html = link_to 'Next Thread', @nextPath, method: :post
+		- btn.inner_html = link_to 'Next Thread', @nextPath, method: :post, style: 'color: white'
 	- else
 		- btn.inner_html = 'Answer ' + questionsLeft.to_s + ' more sentences to proceed'
 
