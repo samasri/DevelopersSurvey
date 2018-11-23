@@ -74,6 +74,10 @@
 - else
 	- rightSideBar.inner_html = '<h1> All sentences are Answered. Click on "Next Thread" button on the left to continue </h1>'
 
+# Change width ratio between main div and right sidebar (now used as form)
+- rightSideBar[:style] = 'width: 400px;'
+- page.css('#mainbar')[0][:style] = 'width: calc(100% - 400px - 24px);'
+
 -# Reuse left side bar for a navigation button
 - leftSideBar = page.css('#left-sidebar')
 - if leftSideBar.empty? then # Not a thread page, ignore it

@@ -1,5 +1,5 @@
 .modal-header
-	%h1 New Response
+	%h1 Thinking of the sentence you just clicked on, please answer the following questions
 = simple_form_for :responses, class: 'clearfix' do |f|
 	.modal-body
 		- @questions.each do |id,sentenceText|
