@@ -1,15 +1,13 @@
 class ResponsesController < ApplicationController
 	include AddResponse
+	include FetchQuestions
+	
 	def new
 		@response = :response
 		session[:picked_sentence] = params[:picked_sentence][:sentence_id]
-		questions = Question.where ['qtype = ?', :sg]
-		@questions = {}
-		@questionRequirement = {}
-		questions.each do |question|
-			@questions[question.id] = question.question_text
-			@questionRequirement[question.id] = question.mandatory
-		end
+		
+		# Get background questions from db and store them in the member fields: questions and questionRequirement
+		fetchQuestions(["qtype = ?", :sg])
 	end
 	
 	def create

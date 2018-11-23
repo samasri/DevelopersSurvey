@@ -1,0 +1,10 @@
+.container
+	.modal-header
+		%h1= @title
+	= simple_form_for @formName, class: 'clearfix' do |f|
+		.modal-body
+			- @questions.each do |id,sentenceText|
+				- isRequired = @questionRequirement[id]
+				= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired
+		.modal-footer
+			= f.submit 'Next', class: 'btn btn-primary'

@@ -1,5 +1,6 @@
 class SurveyController < ApplicationController
 	include AddResponse
+	include FetchQuestions
 	
 	def bg
 		# Keep track of session nbs
@@ -12,14 +13,10 @@ class SurveyController < ApplicationController
 		session[:answeredSentences] = [] # IDs of all sentences whose questions have been already answered
 		session[:toAnswer] = [] # IDs of sentences that should be assessed so far to go to next page
 		
-		# Get background questions from db
-		questions = Question.where ["qtype = ?", :bg]
-		@questions = {}
-		@questionRequirement = {}
-		questions.each do |question|
-			@questions[question.id] = question.question_text
-			@questionRequirement[question.id] = question.mandatory
-		end
+		# Initialize member fields
+		fetchQuestions(["qtype = ?", :bg])
+		@title = 'Background Questions'
+		@formName = :backgroundQuestions
 	end
 	
 	def createBg
@@ -38,6 +35,7 @@ class SurveyController < ApplicationController
 	end
 	
 	def proceedToThreads
+		unless checkSessionNb(1,false) then return end
 		updateSessionNb(2)
 		redirect_to survey_thread1_path
 	end
@@ -80,7 +78,6 @@ class SurveyController < ApplicationController
 		unless checkSessionNb(3,false) then return end
 		updateSessionNb(4)
 		
-		# Save thread2 info
 		redirect_to survey_thread3_path
 	end
 	
@@ -99,10 +96,30 @@ class SurveyController < ApplicationController
 	def proceed3
 		# Keep track of session nbs
 		unless checkSessionNb(4,false) then return end
+		updateSessionNb(5)
+		
+		
+		redirect_to survey_exit_path
+	end
+	
+	def exit
+		unless checkSessionNb(5,true) then return end
+		
+		# Initialize member fields
+		fetchQuestions(["qtype = ?", :eg])
+		@title = 'Background Questions'
+		@formName = :backgroundQuestions
+	end
+	
+	def proceedToThankyou
+		unless checkSessionNb(5,false) then return end
 		deleteSessionNb()
 		
-		# Save thread3 info
 		redirect_to done_path
+	end
+	
+	def thankyou
+	
 	end
 	
 	private
@@ -137,6 +154,8 @@ class SurveyController < ApplicationController
 			return survey_thread2_path
 		elsif pageNb == 4
 			return survey_thread3_path
+		elsif pageNb == 5
+			return survey_exit_path
 		end
 	end
 	
