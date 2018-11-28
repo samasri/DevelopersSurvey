@@ -23,5 +23,7 @@ Rails.application.routes.draw do
 	get '/survey/exit', to: 'survey#exit'
 	post '/survey/exit', to: 'survey#proceedToThankyou'
 	
+	get 'testLoadBalancing', to: 'survey#testLoadBalancing'
+	
 	get '/done', to: 'survey#thankyou'
 end

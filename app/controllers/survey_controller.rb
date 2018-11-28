@@ -126,6 +126,10 @@ class SurveyController < ApplicationController
 	
 	end
 	
+	def testLoadBalancing
+		@threadIDs = generateThreads
+	end
+	
 	private
 	def checkSessionNb(pageNb, isGet)
 		if session.key? :page and not session[:completed]
@@ -171,12 +175,51 @@ class SurveyController < ApplicationController
 		session[:completed] = true
 	end
 	
-	def generateThreads
-		sentences = Sentence.select(:thread_id).distinct.to_a
-		threadIDs = []
+	def generateThreads		
+		sentences = Sentence.all.distinct.to_a
+		responses = Response.select('sentence_id, user_id').distinct.to_a
+		
+		# Connect sentences to their threads
+		sentenceThread = {}
 		sentences.each do |sentence|
-			threadIDs.push(sentence.thread_id.to_s)
+			sentenceThread[sentence.id] = sentence.thread_id
 		end
+		
+		# Connect sentences to the nb of responses for each (distinct reponse per user)
+		sentenceResponses = {}
+		responses.each do |response| 
+			if not sentenceResponses.key? response.sentence_id
+				sentenceResponses[response.sentence_id] = 0
+			end
+			sentenceResponses[response.sentence_id] += 1
+		end
+		
+		# Merge both to get the responses for each thread
+		threadResponses = {}
+		sentenceResponses.each do |id, nbOfResponses|
+			if not threadResponses.key? sentenceThread[id]
+				threadResponses[sentenceThread[id]] = 0
+			end
+			threadResponses[sentenceThread[id]] += nbOfResponses
+		end
+		
+		threadIDs = []
+		
+		for i in 1..3 do
+			maxThreadID = -1
+			maxThreadResponses = -1
+			threadResponses.each do |threadID, nbOfResponses|
+				if nbOfResponses > maxThreadResponses and nbOfResponses < 3
+					maxThreadResponses = nbOfResponses
+					maxThreadID = threadID
+				end
+			end
+			if maxThreadID != -1
+				threadResponses.delete(maxThreadID)
+				threadIDs.push(maxThreadID)
+			end
+		end
+		
 		return threadIDs
 	end
 	
