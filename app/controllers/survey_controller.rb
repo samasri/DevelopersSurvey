@@ -1,6 +1,7 @@
 class SurveyController < ApplicationController
 	include AddResponse
 	include FetchQuestions
+	MAX_RESPONSES = 3
 	
 	def bg
 		# Keep track of session nbs
@@ -8,10 +9,10 @@ class SurveyController < ApplicationController
 		session[:completed] = false
 		
 		# Generate threads + initialize session for new user
-		session[:threads] = generateThreads # The threads that this user will be assessing 
-		session[:page] = 0 # To keep track of completed pages
-		session[:answeredSentences] = [] # IDs of all sentences whose questions have been already answered
-		session[:toAnswer] = [] # IDs of sentences that should be assessed so far to go to next page
+		session[:threads] = generateThreads(MAX_RESPONSES) # The threads that this user will be assessing 
+		session[:page] = 0 # To keep track of completed pages and threads
+		session[:answeredSentences] = [] # IDs of all sentences whose questions have already been answered
+		session[:toAnswer] = [] # IDs of sentences whose questions should be answered so far to go to next page
 		
 		# Initialize member fields
 		fetchQuestions(["qtype = ?", :bg])
@@ -48,7 +49,7 @@ class SurveyController < ApplicationController
 		@threadID = session[:threads][0]
 		@sentences = getThreadSentenceMapping @threadID
 		session[:toAnswer] += getSentenceIDs @threadID
-		session[:toAnswer] &= getSentenceIDs @threadID
+		session[:toAnswer] &= getSentenceIDs @threadID # Remove duplicates
 		@nextPath = survey_thread1_path
 		render :layout => false
 	end
@@ -127,7 +128,7 @@ class SurveyController < ApplicationController
 	end
 	
 	def testLoadBalancing
-		@threadIDs = generateThreads
+		@threadIDs = generateThreads(MAX_RESPONSES)
 	end
 	
 	private
@@ -175,32 +176,25 @@ class SurveyController < ApplicationController
 		session[:completed] = true
 	end
 	
-	def generateThreads		
-		sentences = Sentence.all.distinct.to_a
-		responses = Response.select('sentence_id, user_id').distinct.to_a
+	def generateThreads(maxResponses)
+		# Get threads that have any responses (more than 0 responses)
+		sql = 'SELECT thread_id, COUNT(user_id) as NumberOfResponses FROM (SELECT user_id, thread_id FROM responses as r INNER JOIN sentences as s on r.sentence_id = s.id GROUP BY user_id,  thread_id) as a GROUP BY thread_id;'
+		threadResponsesTable = ActiveRecord::Base.connection.execute(sql)
 		
-		# Connect sentences to their threads
-		sentenceThread = {}
-		sentences.each do |sentence|
-			sentenceThread[sentence.id] = sentence.thread_id
-		end
-		
-		# Connect sentences to the nb of responses for each (distinct reponse per user)
-		sentenceResponses = {}
-		responses.each do |response| 
-			if not sentenceResponses.key? response.sentence_id
-				sentenceResponses[response.sentence_id] = 0
-			end
-			sentenceResponses[response.sentence_id] += 1
-		end
-		
-		# Merge both to get the responses for each thread
 		threadResponses = {}
-		sentenceResponses.each do |id, nbOfResponses|
-			if not threadResponses.key? sentenceThread[id]
-				threadResponses[sentenceThread[id]] = 0
+		threadResponsesTable.each do |record|
+			unless record[0] == -1
+				threadResponses[record[0]] = record[1]
 			end
-			threadResponses[sentenceThread[id]] += nbOfResponses
+		end
+		
+		# Add all other threads (that has no responses) to the threadResponses map
+		sentences = Sentence.select(:thread_id).distinct.to_a
+		sentences.each do |sentence|
+			id = sentence.thread_id
+			if not threadResponses.key? id
+				threadResponses[id] = 0
+			end
 		end
 		
 		threadIDs = []
@@ -209,7 +203,7 @@ class SurveyController < ApplicationController
 			maxThreadID = -1
 			maxThreadResponses = -1
 			threadResponses.each do |threadID, nbOfResponses|
-				if nbOfResponses > maxThreadResponses and nbOfResponses < 3
+				if nbOfResponses > maxThreadResponses and nbOfResponses < maxResponses
 					maxThreadResponses = nbOfResponses
 					maxThreadID = threadID
 				end
@@ -220,6 +214,11 @@ class SurveyController < ApplicationController
 			end
 		end
 		
+		if threadIDs.count < 3
+			logger.debug "Load balancing: all threads have " + MAX_RESPONSES.to_s + " responses. Increasing by 5."
+			neededThreads = 3 - threadIDs.count
+			threadIDs += generateThreads(maxResponses + 5)[0..(neededThreads - 1)]
+		end
 		return threadIDs
 	end
 	
