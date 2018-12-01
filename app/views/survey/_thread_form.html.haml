@@ -50,18 +50,14 @@
 - @sentences.each do |answerID, sentenceTexts|
 	- sentenceTexts.each do |sentenceContainer|
 		- sentence_id = sentenceContainer[0]
-		- sentence_text = sentenceContainer[1]	
+		- sentence_text = sentenceContainer[1]
+		- logger.debug sentence_text.gsub('/<[a-d]+>/', '')
 		- searchResult = searchArray(session[:answeredSentences], sentence_id)
 		- if searchResult # Responses for this sentence have already been submitted
 			- sentenceReplacement = '<mark style="background-color: grey">' + sentence_text + '</mark>'
 		- else # Responses for this sentence have not been submitted yet
 			- btn = link_to sentence_text, responses_new_path(:picked_sentence => { :sentence_id => sentence_id.to_s}), remote: true
 			- sentenceReplacement = '<mark>' + btn + '</mark>'
-		- logger.debug " ------------------------- Error -------------------------"
-		- logger.debug "ThreadID: " + @threadID.to_s
-		- logger.debug "AnswerID: " + answerID
-		- logger.debug "Sentence Text: " + sentence_text
-		- logger.debug " ----------------------- Error End -----------------------"
 		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentence_text, sentenceReplacement)
 		- page.css('#' + answerID)[0].inner_html = highlightedAnswer
 
@@ -100,4 +96,4 @@
 		- btn[:class] = 'btn btn-primary'
 
 = html = page.to_html.html_safe
-= btn.inner_html = link_to 'Next Thread', @nextPath, method: :post, style: 'color: white', class: 'btn btn-primary'
+-#= btn.inner_html = link_to 'Next Thread', @nextPath, method: :post, style: 'color: white', class: 'btn btn-primary'

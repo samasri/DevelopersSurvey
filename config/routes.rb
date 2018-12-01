@@ -20,6 +20,9 @@ Rails.application.routes.draw do
 	get '/survey/thread3', to: 'survey#thread3'
 	post '/survey/thread3', to: 'survey#proceed3'
 	
+	get '/survey/thread4', to: 'survey#thread4'
+	post '/survey/thread4', to: 'survey#proceed4'
+	
 	get '/survey/exit', to: 'survey#exit'
 	post '/survey/exit', to: 'survey#proceedToThankyou'
 	

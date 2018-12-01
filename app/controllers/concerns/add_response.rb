@@ -6,7 +6,7 @@ module AddResponse
 	end
 	
 	
-	def addResponse(questionSet, answers, userID, sentenceID = -1)
+	def addResponse(questionSet, answers, userID, sentenceID = -3)
 		logger.debug "--------------- " + questionSet + " --------------"
 		logger.debug 'SentenceID: ' + sentenceID.to_s
 		unless sentenceID == -1 then session[:answeredSentences].append(sentenceID.to_i) end

@@ -100,11 +100,33 @@ class SurveyController < ApplicationController
 		updateSessionNb(5)
 		
 		
+		redirect_to survey_thread4_path
+	end
+	
+	
+	def thread4
+		unless checkSessionNb(5,true) then return end
+		
+		@form = :thread4
+		@threadID = Sentence.find(-1).thread_id
+		@sentences = getThreadSentenceMapping @threadID
+		session[:toAnswer] += getSentenceIDs @threadID
+		session[:toAnswer] &= getSentenceIDs @threadID
+		@nextPath = survey_thread4_path
+		render :layout => false
+	end
+	
+	def proceed4
+		# Keep track of session nbs
+		unless checkSessionNb(5,false) then return end
+		updateSessionNb(6)
+		
+		
 		redirect_to survey_exit_path
 	end
 	
 	def exit
-		unless checkSessionNb(5,true) then return end
+		unless checkSessionNb(6,true) then return end
 		
 		# Initialize member fields
 		fetchQuestions(["qtype = ?", :eg])
@@ -113,14 +135,14 @@ class SurveyController < ApplicationController
 	end
 	
 	def proceedToThankyou
-		unless checkSessionNb(5,false) then return end
-		updateSessionNb(6)
+		unless checkSessionNb(6,false) then return end
+		updateSessionNb(7)
 		
 		redirect_to done_path
 	end
 	
 	def thankyou
-		unless checkSessionNb(6,true) then return end
+		unless checkSessionNb(7,true) then return end
 		deleteSessionNb()
 		
 		@sessionNb = session.id
@@ -164,6 +186,8 @@ class SurveyController < ApplicationController
 		elsif pageNb == 4
 			return survey_thread3_path
 		elsif pageNb == 5
+			return survey_thread4_path
+		elsif pageNb == 6
 			return survey_exit_path
 		end
 	end
@@ -183,7 +207,7 @@ class SurveyController < ApplicationController
 		
 		threadResponses = {}
 		threadResponsesTable.each do |record|
-			unless record[0] == -1
+			unless record[0] < 0 # Ignore dummy thread answers and 
 				threadResponses[record[0]] = record[1]
 			end
 		end
