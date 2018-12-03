@@ -52,11 +52,10 @@
 		- sentence_id = sentenceContainer[0]
 		- sentence_text = sentenceContainer[1]
 		- searchResult = searchArray(session[:answeredSentences], sentence_id)
-		- sentenceReplacement = sentence_text.gsub(/([<][\/]?[a-z]+>)/, '') # Remove HTML tags
 		- if searchResult # Responses for this sentence have already been submitted
-			- sentenceReplacement = '<mark style="background-color: grey">' + sentenceReplacement + '</mark>'
+			- sentenceReplacement = '<mark style="background-color: grey">' + sentence_text + '</mark>'
 		- else # Responses for this sentence have not been submitted yetbefore tags inside the target sentence
-			- btn = link_to sentenceReplacement, responses_new_path(:picked_sentence => { :sentence_id => sentence_id.to_s}), remote: true
+			- btn = link_to sentence_text.html_safe, responses_new_path(:picked_sentence => { :sentence_id => sentence_id.to_s}), remote: true
 			- sentenceReplacement = '<mark>' + btn + '</mark>'
 		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentence_text, sentenceReplacement)
 		- page.css('#' + answerID)[0].inner_html = highlightedAnswer
