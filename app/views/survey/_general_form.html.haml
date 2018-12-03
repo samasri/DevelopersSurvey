@@ -5,7 +5,10 @@
 		.modal-body
 			- @questions.each do |id,sentenceText|
 				- isRequired = @questionRequirement[id]
-				- if @questionType == 'Text'
+				%h1
+					Text Type:
+					= @questionType[id]
+				- if @questionType[id] == 'text'
 					= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired, :as => "text"
 				- else
 					= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired
