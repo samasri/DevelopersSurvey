@@ -24,9 +24,10 @@ Rails.application.routes.draw do
 	post '/survey/thread4', to: 'survey#proceed4'
 	
 	get '/survey/exit', to: 'survey#exit'
-	post '/survey/exit', to: 'survey#proceedToThankyou'
-	
-	get 'testLoadBalancing', to: 'survey#testLoadBalancing'
+	post '/survey/exit', to: 'survey#proceedToThankyou'	
 	
 	get '/done', to: 'survey#thankyou'
+	
+	get 'testLoadBalancing', to: 'test#testLoadBalancing'
+	get 'testSentenceHighlighting', to:'test#testSentenceHighlighting'
 end

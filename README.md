@@ -26,6 +26,7 @@ The schema can be found [here](https://github.com/samasri/DevelopersSurvey/blob/
 * Having the same sentence text multiple times in the same answer results in all matching sentence text to be highlighted
 * The selected sentence (for highlighting) must appear with the same text in HTML. For example if the HTML of a sentence is: `Hello <span> world </span>`, this sentence cannot be selected for highlighting.
 * If a user answers only the questions for only one sentence in a thread, the load balancing algorithms still counts this user as a respondent when calculating the threads with the highest number of respondants (although this respondent did not answer all the questions for that thread).
+* If database is empty (no sentences or questions are populated), the load balancer gets into an infinite loop
 
 # Test Suit
 Test suit still not developed
