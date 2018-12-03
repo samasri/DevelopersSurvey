@@ -15,10 +15,7 @@ module ThreadHelpers
 		threadResponses = {}
 		threadResponsesTable.each do |record|
 			unless record[0] < 0 or record[0] == dummyThreadID # Ignore invalid threads
-				# logger.debug 'Adding: ' + record[0].to_s
 				threadResponses[record[0]] = record[1]
-			else
-				# logger.debug 'Ignoring: ' + record[0].to_s
 			end
 		end
 		
@@ -26,7 +23,7 @@ module ThreadHelpers
 		sentences = Sentence.select(:thread_id).distinct.to_a
 		sentences.each do |sentence|
 			id = sentence.thread_id
-			if not threadResponses.key? id
+			if id > 0 and id != dummyThreadID and not threadResponses.key? id
 				threadResponses[id] = 0
 			end
 		end

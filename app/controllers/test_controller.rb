@@ -2,7 +2,7 @@ class TestController < ApplicationController
 	include ThreadHelpers
 	
 	def testLoadBalancing
-		@threadIDs = generateThreads(8)
+		@threadIDs = generateThreads(3)
 	end
 	
 	def testSentenceHighlighting
