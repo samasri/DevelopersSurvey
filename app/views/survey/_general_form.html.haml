@@ -5,6 +5,9 @@
 		.modal-body
 			- @questions.each do |id,sentenceText|
 				- isRequired = @questionRequirement[id]
-				= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired
+				- if @questionType == 'Text'
+					= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired, :as => "text"
+				- else
+					= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired
 		.modal-footer
 			= f.submit 'Next', class: 'btn btn-primary'

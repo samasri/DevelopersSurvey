@@ -15,7 +15,10 @@ module ThreadHelpers
 		threadResponses = {}
 		threadResponsesTable.each do |record|
 			unless record[0] < 0 or record[0] == dummyThreadID # Ignore invalid threads
+				# logger.debug 'Adding: ' + record[0].to_s
 				threadResponses[record[0]] = record[1]
+			else
+				# logger.debug 'Ignoring: ' + record[0].to_s
 			end
 		end
 		
@@ -46,8 +49,8 @@ module ThreadHelpers
 			end
 		end
 		
-		if threadIDs.count < maxResponses # if less than 3 threads are picked, increase the limit and try again
-			logger.debug "Load balancing: all threads have " + maxResponses.to_s + " responses. Increasing by 5."
+		if threadIDs.count < 3 # if less than 3 threads are picked, increase the limit and try again
+			logger.debug "Load balancing: all threads have " + maxResponses.to_s + " responses. Increasing by 5"
 			neededThreads = 3 - threadIDs.count
 			threadIDs += generateThreads(maxResponses + 5)[0..(neededThreads - 1)]
 		end

@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 2018_11_22_052003) do
     t.text "question_text"
     t.string "qtype"
     t.boolean "mandatory"
+    t.string "responseType"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -4,6 +4,7 @@ class CreateQuestions < ActiveRecord::Migration[5.2]
       t.text :question_text
       t.string :qtype
 			t.boolean :mandatory
+			t.string :responseType
 
       t.timestamps
     end
