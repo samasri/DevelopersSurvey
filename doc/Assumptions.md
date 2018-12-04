@@ -16,3 +16,9 @@
 		* Since there are questions that are not related to any questions but are related to the thread, each thread also has a "dummy sentence", which has the sentence_text = -1 and answer_id = -1. Those sentences are used to allow responses of non-sentence-related questions (but thread-related questions) to be recorded.
 * In theads, right sidebar is 400 px (hard coded)
 * The null sentence ID is hard coded to -3 in multiple places in the code.
+* Load Balancer Algorithm: 
+    * Searches for threads that have a nb of responses less than or equal to `MAX_RESPONSES`
+    * Picks the top 3 of those threads with most responses
+    * If less than 3 results are found, `MAX_RESPONSES` is incremented by 5, and the algorithm runs again to find the rest of the 3 results
+    * Displays them to the currently visiting user.
+    * `MAX_RESPONSES` is located in the Survey Controller ([here](https://github.com/samasri/DevelopersSurvey/blob/d711fb0956698879e42bf28f0c8fa436bd33846a/app/controllers/survey_controller.rb#L5))
