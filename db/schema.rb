@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2018_11_22_052003) do
   create_table "sentences", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "thread_id"
     t.string "answer_id"
-    t.string "sentence_text"
+    t.text "sentence_text"
     t.string "technique"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
