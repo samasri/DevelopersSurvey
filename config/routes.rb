@@ -5,6 +5,9 @@ Rails.application.routes.draw do
 	get '/responses/new', to: 'responses#new'
 	post '/responses/new', to: 'responses#create'
 	
+	get '/responses/newLastResponse', to: 'responses#newLastResponse'
+	post '/responses/newLastResponse', to: 'responses#createLastResponse'
+	
 	get '/survey/bg', to: 'survey#bg'
 	post '/survey/bg', to: 'survey#createBg'
 	

@@ -1,6 +1,6 @@
 .modal-header
-	%h3 Thinking of the sentence you just clicked on, please answer the following questions
-= simple_form_for :responses, class: 'clearfix' do |f|
+	%h3 Last Question
+= simple_form_for :lastResponse, class: 'clearfix' do |f|
 	.modal-body
 		- @questions.each do |id,sentenceText|
 			- isRequired = @questionRequirement[id]
@@ -10,6 +10,8 @@
 				- choices = sentenceText.split(' || ')
 				- sentenceText = choices.shift
 				= f.input :"#{id}", :label=> "#{sentenceText}", :collection => choices, required: isRequired
+			- elsif @questionType[id] == 'text'
+				= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired, :as => "text"
 			- else
 				= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired
 	.modal-footer

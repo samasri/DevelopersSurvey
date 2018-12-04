@@ -10,13 +10,7 @@ class SurveyController < ApplicationController
 		session[:completed] = false
 		
 		# Generate threads + initialize session for new user
-		session[:threads] = generateThreads(MAX_RESPONSES) # The threads that this user will be assessing
-		prng = Random.new
-		session[:randomPage] = Random.rand(1..4)
-		session[:page] = 0 # To keep track of completed pages and threads
-		session[:answeredSentences] = [] # IDs of all sentences whose questions have already been answered
-		session[:toAnswer] = [] # IDs of sentences whose questions should be answered so far to go to next page
-		session[:completedPages] = {} # Page numbers that are already visited
+		initializeSession
 		
 		# Initialize member fields
 		fetchQuestions(["qtype = ?", :bg])
@@ -193,5 +187,15 @@ class SurveyController < ApplicationController
 	
 	def deleteSessionNb
 		session[:completed] = true
+	end
+	
+	def initializeSession
+		session[:threads] = generateThreads(MAX_RESPONSES) # The threads that this user will be assessing
+		prng = Random.new
+		session[:randomPage] = Random.rand(1..4) # Randomly decide which page is going to display the dummy question
+		session[:page] = 0 # To keep track of completed pages and threads
+		session[:answeredSentences] = [] # IDs of all sentences whose questions have already been answered
+		session[:toAnswer] = [] # IDs of sentences whose questions should be answered so far to go to next page
+		session[:completedPages] = {} # Links every page number to its respectiv thread ID
 	end
 end

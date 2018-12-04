@@ -48,6 +48,7 @@
 	- return false
 
 - @sentences.each do |answerID, sentenceTexts|
+	- if answerID == '-1' then next end # Ignore dummy sentences
 	- sentenceTexts.each do |sentenceContainer|
 		- sentence_id = sentenceContainer[0]
 		- sentence_text = sentenceContainer[1]
@@ -67,10 +68,12 @@
 -# Reuse right side bar for response form
 - rightSideBar = page.css('#sidebar')[0]
 - rightSideBar[:class] = 'left-sidebar--sticky-container js-sticky-leftnav'
-- unless questionsLeft == 0
-	- rightSideBar.inner_html = '<h1> Click on a highlighted sentence to get questions (' + questionsLeft.to_s + ' sentences left) </h1>'
-- else
+- if questionsLeft == 1
+	- rightSideBar.inner_html = '<h1> One last question about the thread. Click on the "Thread Question" button on the left to continue </h1>'
+- elsif questionsLeft == 0
 	- rightSideBar.inner_html = '<h1> All sentences are Answered. Click on "Next Thread" button on the left to continue </h1>'
+- else
+	- rightSideBar.inner_html = '<h1> Click on a highlighted sentence to get questions (' + (questionsLeft - 1).to_s + ' sentences left) </h1>'
 
 -# Change width ratio between main div and right sidebar (now used as form)
 - rightSideBar[:style] = 'width: 400px;'
@@ -90,19 +93,35 @@
 	-# Fill button with the right HTML
 	- if questionsLeft == 0
 		- btn.inner_html = link_to 'Next Thread', @nextPath, method: :post, style: 'color: white', class: 'btn btn-primary'
+	- elsif questionsLeft == 1
+		- btn.inner_html = link_to 'Thread Question', responses_newLastResponse_path(:picked_thread => { :thread_id => @threadID.to_s}), style: 'color: white', class: 'btn btn-primary', remote: true
 	- else
-		- btn.inner_html = 'Answer ' + questionsLeft.to_s + ' more sentences to proceed'
+		- btn.inner_html = 'Answer ' + (questionsLeft - 1).to_s + ' more sentences to proceed'
 		- btn[:class] = 'btn btn-primary'
 
 = html = page.to_html.html_safe
-= btn.inner_html = link_to 'Next Thread', @nextPath, method: :post, style: 'color: white', class: 'btn btn-primary'
-.container
-	%h1
-		Random Page: 
-		= session[:randomPage]
-	%h1
-		Threads: 
-		= session[:threads]
-	%h1
-		Thread ID: 
-		= @threadID
+#modal.modal.fade
+
+-# Debugging
+	= btn.inner_html = link_to 'Next Thread', @nextPath, method: :post, style: 'color: white', class: 'btn btn-primary'
+	%table.table.table-hover.table-bordered
+		%thead
+			%tr
+				%th Variable
+				%th Value
+		%tbody
+			%tr
+				%td Random Page: 
+				%td= session[:randomPage]
+			%tr
+				%td Threads: 
+				%td= session[:threads]
+			%tr
+				%td Thread ID: 
+				%td= @threadID
+			%tr
+				%td Sentences that should be answered:
+				%td= session[:toAnswer]
+			%tr
+				%td Answered questions
+				%td= session[:answeredSentences]

@@ -19,4 +19,19 @@ class ResponsesController < ApplicationController
 		
 		redirect_to survey_thread1_path
 	end
+	
+	def newLastResponse
+		session[:picked_thread] = params[:picked_thread][:thread_id]
+		fetchQuestions(["qtype = ?", :lg])
+	end
+	
+	def createLastResponse
+		threadID = session[:picked_thread]
+		dummySentenceID = Sentence.where(["thread_id = ? and answer_id = ?", threadID, -1])[0].id
+		userID = session.id
+		answers = params['lastResponse'].permit!.to_h # questionID --> answer
+		addResponse('Thread Questions', answers, userID, dummySentenceID)
+		
+		redirect_to survey_thread1_path
+	end
 end
