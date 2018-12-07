@@ -47,6 +47,7 @@
 		- if a.to_s == key.to_s then return true end
 	- return false
 
+- logger.debug '---------------debug----------------'
 - @sentences.each do |answerID, sentenceTexts|
 	- if answerID == '-1' then next end # Ignore dummy sentences
 	- sentenceTexts.each do |sentenceContainer|
@@ -56,10 +57,13 @@
 		- if searchResult # Responses for this sentence have already been submitted
 			- sentenceReplacement = '<mark style="background-color: grey">' + sentence_text + '</mark>'
 		- else # Responses for this sentence have not been submitted yetbefore tags inside the target sentence
+			- logger.debug sentence_text
+			- logger.debug page.css('#' + answerID)[0].inner_html.include? "/>= 9.5 and they only care about top-level elements being merged without duplicate keys, then it's as easy as using the || operator:"
 			- btn = link_to sentence_text.html_safe, responses_new_path(:picked_sentence => { :sentence_id => sentence_id.to_s}), remote: true
 			- sentenceReplacement = '<mark>' + btn + '</mark>'
 		- highlightedAnswer = page.css('#' + answerID)[0].inner_html.gsub(sentence_text, sentenceReplacement)
 		- page.css('#' + answerID)[0].inner_html = highlightedAnswer
+- logger.debug '------------end of debug-------------'
 
 -# Calculate the number of highlighted sentences that the user have to address to continue
 - questionsLeft = session[:toAnswer] - session[:answeredSentences]
