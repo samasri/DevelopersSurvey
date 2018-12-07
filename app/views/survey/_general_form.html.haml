@@ -5,7 +5,13 @@
 		.modal-body
 			- @questions.each do |id,sentenceText|
 				- isRequired = @questionRequirement[id]
-				- if @questionType[id] == 'text'
+				- isMultiple = false
+				- if sentenceText.include? '||' # Question is a multiple choice question
+					- isMultiple = true
+					- choices = sentenceText.split(' || ')
+					- sentenceText = choices.shift
+					= f.input :"#{id}", :label=> "#{sentenceText}", :collection => choices, required: isRequired
+				- elsif @questionType[id] == 'text'
 					= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired, :as => "text"
 				- else
 					= f.input :"#{id}", :label=> "#{sentenceText}", required: isRequired
